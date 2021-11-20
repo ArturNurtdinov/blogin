@@ -12,6 +12,12 @@ import ru.spbstu.blog.root.di.RootFeatureHolder
 import ru.spbstu.common.di.FeatureApiHolder
 import ru.spbstu.common.di.FeatureContainer
 import ru.spbstu.common.di.scope.ApplicationScope
+import ru.spbstu.profile.di.ProfileApi
+import ru.spbstu.profile.di.ProfileFeatureHolder
+import ru.spbstu.search.di.SearchApi
+import ru.spbstu.search.di.SearchFeatureHolder
+import ru.spbstu.wall.di.WallApi
+import ru.spbstu.wall.di.WallFeatureHolder
 
 @Module
 interface ComponentHolderModule {
@@ -31,6 +37,24 @@ interface ComponentHolderModule {
     @ClassKey(AuthApi::class)
     @IntoMap
     fun provideAuthFeatureHolder(authFeatureHolder: AuthFeatureHolder): FeatureApiHolder
+
+    @ApplicationScope
+    @Binds
+    @ClassKey(WallApi::class)
+    @IntoMap
+    fun provideWallFeatureHolder(wallFeatureHolder: WallFeatureHolder): FeatureApiHolder
+
+    @ApplicationScope
+    @Binds
+    @ClassKey(SearchApi::class)
+    @IntoMap
+    fun provideSearchFeatureHolder(wallFeatureHolder: SearchFeatureHolder): FeatureApiHolder
+
+    @ApplicationScope
+    @Binds
+    @ClassKey(ProfileApi::class)
+    @IntoMap
+    fun provideProfileFeatureHolder(profileFeatureHolder: ProfileFeatureHolder): FeatureApiHolder
 
     /* @ApplicationScope
      @Binds

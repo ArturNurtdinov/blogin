@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottom_nav_graph">
+    android:id="@+id/bottom_nav_graph"
+    app:startDestination="@id/blogFragment">
+
+    <fragment
+        android:id="@+id/blogFragment"
+        android:name="ru.spbstu.wall.blog.presentation.BlogFragment"
+        android:label="BlogFragment" >
+        <action
+            android:id="@+id/action_blogFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="ru.spbstu.profile.profile.presentation.ProfileFragment"
+        android:label="SearchFragment" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="ru.spbstu.profile.profile.presentation.ProfileFragment"
+        android:label="ProfileFragment" />
+
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="ru.spbstu.profile.user_profile.presentation.UserProfileFragment"
+        android:label="UserProfileFragment" />
 
 </navigation>

@@ -41,4 +41,5 @@ dependencies {
     kapt(Deps.daggerKapt)
     testImplementation(Deps.testLibraries)
     androidTestImplementation(Deps.androidTestLibraries)
+    kapt(Deps.glideKapt)
 }

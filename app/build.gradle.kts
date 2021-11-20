@@ -42,6 +42,8 @@ dependencies {
     implementation(project(mapOf("path" to ":common")))
     implementation(project(mapOf("path" to ":auth")))
     implementation(project(mapOf("path" to ":wall")))
+    implementation(project(mapOf("path" to ":profile")))
+    implementation(project(mapOf("path" to ":search")))
     implementation(Deps.appLibraries)
     implementation(Deps.daggerDep)
     kapt(Deps.daggerKapt)
