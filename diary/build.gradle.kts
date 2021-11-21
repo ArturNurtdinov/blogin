@@ -1,18 +1,16 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("kotlin-android")
 }
 
 android {
     compileSdk = ConfigData.compileSdkVersion
 
     defaultConfig {
-        applicationId = "ru.spbstu.blog"
         minSdk = ConfigData.minSdkVersion
         targetSdk = ConfigData.targetSdkVersion
-        versionCode = ConfigData.versionCode
-        versionName = ConfigData.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,8 +19,8 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
     }
@@ -40,13 +38,9 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":common")))
-    implementation(project(mapOf("path" to ":auth")))
-    implementation(project(mapOf("path" to ":wall")))
-    implementation(project(mapOf("path" to ":profile")))
-    implementation(project(mapOf("path" to ":search")))
-    implementation(project(mapOf("path" to ":diary")))
     implementation(Deps.appLibraries)
     implementation(Deps.daggerDep)
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
     kapt(Deps.daggerKapt)
     testImplementation(Deps.testLibraries)
     androidTestImplementation(Deps.androidTestLibraries)

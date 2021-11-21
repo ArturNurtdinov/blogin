@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/blogFragment"
         android:name="ru.spbstu.wall.blog.presentation.BlogFragment"
-        android:label="BlogFragment" >
+        android:label="BlogFragment">
         <action
             android:id="@+id/action_blogFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="ru.spbstu.profile.profile.presentation.ProfileFragment"
-        android:label="ProfileFragment" >
+        android:label="ProfileFragment">
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
@@ -44,5 +44,10 @@
         android:id="@+id/favoritesFragment"
         android:name="ru.spbstu.profile.favorites.presentation.FavoritesFragment"
         android:label="FavoritesFragment" />
+
+    <fragment
+        android:id="@+id/diaryFragment"
+        android:name="ru.spbstu.diary.diary.presentation.DiaryFragment"
+        android:label="DiaryFragment" />
 
 </navigation>

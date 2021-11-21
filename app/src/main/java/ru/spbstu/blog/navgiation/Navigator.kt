@@ -6,11 +6,12 @@ import androidx.navigation.findNavController
 import ru.spbstu.auth.AuthRouter
 import ru.spbstu.blog.R
 import ru.spbstu.blog.root.presentation.RootRouter
+import ru.spbstu.diary.DiaryRouter
 import ru.spbstu.profile.ProfileRouter
 import ru.spbstu.search.SearchRouter
 import ru.spbstu.wall.WallRouter
 
-class Navigator : RootRouter, AuthRouter, WallRouter, SearchRouter, ProfileRouter {
+class Navigator : RootRouter, AuthRouter, WallRouter, SearchRouter, ProfileRouter, DiaryRouter {
 
     private var navController: NavController? = null
     private var activity: AppCompatActivity? = null

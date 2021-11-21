@@ -5,6 +5,7 @@ import dagger.Provides
 import ru.spbstu.auth.AuthRouter
 import ru.spbstu.blog.navgiation.Navigator
 import ru.spbstu.common.di.scope.ApplicationScope
+import ru.spbstu.diary.DiaryRouter
 import ru.spbstu.profile.ProfileRouter
 import ru.spbstu.search.SearchRouter
 import ru.spbstu.wall.WallRouter
@@ -31,4 +32,8 @@ class NavigationModule {
     @ApplicationScope
     @Provides
     fun provideProfileRouter(navigator: Navigator): ProfileRouter = navigator
+
+    @ApplicationScope
+    @Provides
+    fun provideDiaryRouter(navigator: Navigator): DiaryRouter = navigator
 }

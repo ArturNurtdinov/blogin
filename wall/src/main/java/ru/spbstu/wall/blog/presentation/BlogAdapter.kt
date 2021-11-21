@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.spbstu.common.domain.Blog
+import ru.spbstu.common.extensions.setDebounceClickListener
 import ru.spbstu.wall.databinding.ItemPostBinding
 
 class BlogAdapter(private val onUserAvatarClick: () -> Unit) :
@@ -59,7 +60,7 @@ class BlogAdapter(private val onUserAvatarClick: () -> Unit) :
                 binding.itemPostIvImage.visibility = View.GONE
             }
 
-            binding.itemPostIvAvatar.setOnClickListener {
+            binding.itemPostIvAvatar.setDebounceClickListener {
                 onUserAvatarClick.invoke()
             }
         }

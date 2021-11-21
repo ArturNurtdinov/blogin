@@ -12,6 +12,8 @@ import ru.spbstu.blog.root.di.RootFeatureHolder
 import ru.spbstu.common.di.FeatureApiHolder
 import ru.spbstu.common.di.FeatureContainer
 import ru.spbstu.common.di.scope.ApplicationScope
+import ru.spbstu.diary.di.DiaryApi
+import ru.spbstu.diary.di.DiaryFeatureHolder
 import ru.spbstu.profile.di.ProfileApi
 import ru.spbstu.profile.di.ProfileFeatureHolder
 import ru.spbstu.search.di.SearchApi
@@ -56,9 +58,9 @@ interface ComponentHolderModule {
     @IntoMap
     fun provideProfileFeatureHolder(profileFeatureHolder: ProfileFeatureHolder): FeatureApiHolder
 
-    /* @ApplicationScope
+     @ApplicationScope
      @Binds
-     @ClassKey(SplashFeatureApi::class)
+     @ClassKey(DiaryApi::class)
      @IntoMap
-     fun provideSplashFeatureHolder(splashFeatureHolder: SplashFeatureHolder): FeatureApiHolder*/
+     fun provideDiaryFeatureHolder(splashFeatureHolder: DiaryFeatureHolder): FeatureApiHolder
 }
