@@ -28,6 +28,18 @@ class Navigator : RootRouter, AuthRouter, WallRouter, SearchRouter, ProfileRoute
         activity = null
     }
 
+    override fun navigateToFavorites() {
+        bottomNavController?.navigate(R.id.action_profileFragment_to_favoritesFragment)
+    }
+
+    override fun navigateToProfileEdit() {
+        bottomNavController?.navigate(R.id.action_profileFragment_to_editProfileFragment)
+    }
+
+    override fun pop() {
+        bottomNavController?.popBackStack()
+    }
+
     override fun openMainPage() {
         navController?.navigate(R.id.action_loginFragment_to_mainFragment)
     }

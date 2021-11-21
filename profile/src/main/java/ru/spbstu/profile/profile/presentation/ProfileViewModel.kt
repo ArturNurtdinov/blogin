@@ -14,6 +14,14 @@ class ProfileViewModel(private val router: ProfileRouter) : ViewModel() {
         loadData()
     }
 
+    fun editProfile() {
+        router.navigateToProfileEdit()
+    }
+
+    fun openFavorites() {
+        router.navigateToFavorites()
+    }
+
     private fun loadData() {
         _state.value = State(
             Profile(1, "Artur","viruskuls", null)

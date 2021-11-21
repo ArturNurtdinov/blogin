@@ -1,17 +1,16 @@
 package ru.spbstu.profile.profile.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
-import androidx.core.view.setPadding
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.spbstu.common.di.FeatureUtils
+import ru.spbstu.common.extensions.setDebounceClickListener
 import ru.spbstu.profile.R
 import ru.spbstu.profile.databinding.FragmentProfileBinding
 import ru.spbstu.profile.di.ProfileApi
@@ -38,6 +37,9 @@ class ProfileFragment : Fragment() {
             it.showContextMenu()
         }
         registerForContextMenu(binding.frgProfileIbActions)
+        binding.frgProfileTvFavorites.setDebounceClickListener {
+            viewModel.openFavorites()
+        }
         return binding.root
     }
 
@@ -75,6 +77,7 @@ class ProfileFragment : Fragment() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.edit -> {
+                viewModel.editProfile()
                 true
             }
             R.id.exit -> {

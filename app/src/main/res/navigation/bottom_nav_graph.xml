@@ -15,17 +15,34 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="ru.spbstu.profile.profile.presentation.ProfileFragment"
+        android:name="ru.spbstu.search.search.presentation.SearchFragment"
         android:label="SearchFragment" />
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="ru.spbstu.profile.profile.presentation.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/userProfileFragment"
         android:name="ru.spbstu.profile.user_profile.presentation.UserProfileFragment"
         android:label="UserProfileFragment" />
+
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="ru.spbstu.profile.edit_profile.presentation.EditProfileFragment"
+        android:label="EditProfileFragment" />
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="ru.spbstu.profile.favorites.presentation.FavoritesFragment"
+        android:label="FavoritesFragment" />
 
 </navigation>

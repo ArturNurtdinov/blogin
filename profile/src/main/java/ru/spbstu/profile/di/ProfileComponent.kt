@@ -5,6 +5,8 @@ import dagger.Component
 import ru.spbstu.common.di.CommonApi
 import ru.spbstu.common.di.scope.FeatureScope
 import ru.spbstu.profile.ProfileRouter
+import ru.spbstu.profile.edit_profile.di.EditProfileComponent
+import ru.spbstu.profile.favorites.di.FavoritesComponent
 import ru.spbstu.profile.profile.di.ProfileProfileComponent
 import ru.spbstu.profile.user_profile.di.UserProfileComponent
 
@@ -21,7 +23,9 @@ import ru.spbstu.profile.user_profile.di.UserProfileComponent
 interface ProfileComponent {
 
     fun profileProfileComponentFactory(): ProfileProfileComponent.Factory
+    fun editProfileComponentFactory(): EditProfileComponent.Factory
     fun userProfileComponentFactory(): UserProfileComponent.Factory
+    fun favoritesComponentFactory(): FavoritesComponent.Factory
 
     @Component.Factory
     interface Factory {

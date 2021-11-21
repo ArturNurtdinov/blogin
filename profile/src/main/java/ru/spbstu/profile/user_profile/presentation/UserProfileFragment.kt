@@ -17,7 +17,6 @@ import ru.spbstu.profile.R
 import ru.spbstu.profile.databinding.FragmentUserProfileBinding
 import ru.spbstu.profile.di.ProfileApi
 import ru.spbstu.profile.di.ProfileComponent
-import ru.spbstu.profile.profile.presentation.ProfileFragment
 import ru.spbstu.profile.profile.presentation.UserProfileViewModel
 import javax.inject.Inject
 import kotlin.math.abs
@@ -132,6 +131,6 @@ class UserProfileFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = ProfileFragment()
+        fun newInstance() = UserProfileFragment()
     }
 }
