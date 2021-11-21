@@ -54,5 +54,9 @@ class UserBlogViewModel(private val router: DiaryRouter) : ViewModel() {
         )
     }
 
+    fun openPostFragment(isEdit: Boolean) {
+        router.navigateToPostFragment(true, isEdit, null)
+    }
+
     data class State(val blogs: List<Blog>)
 }

@@ -1,7 +1,6 @@
 package ru.spbstu.profile.edit_profile.presentation
 
-import android.app.Activity
-import android.content.Context
+
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,12 +11,11 @@ import ru.spbstu.profile.databinding.FragmentEditProfileBinding
 import ru.spbstu.profile.di.ProfileApi
 import ru.spbstu.profile.di.ProfileComponent
 import javax.inject.Inject
-import android.content.Intent
 import android.net.Uri
-import androidx.activity.result.contract.ActivityResultContract
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
+import ru.spbstu.common.picker.PickPhoto
 
 class EditProfileFragment : Fragment() {
 
@@ -76,20 +74,5 @@ class EditProfileFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = EditProfileFragment()
-    }
-
-    private class PickPhoto : ActivityResultContract<Int, Uri?>() {
-        override fun createIntent(context: Context, input: Int?): Intent =
-            Intent(Intent.ACTION_PICK).apply {
-                type = "image/*"
-            }
-
-        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            if (resultCode != Activity.RESULT_OK) {
-                return null
-            }
-            return intent?.data
-        }
-
     }
 }

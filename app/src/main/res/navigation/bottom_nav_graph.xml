@@ -48,6 +48,15 @@
     <fragment
         android:id="@+id/diaryFragment"
         android:name="ru.spbstu.diary.diary.presentation.DiaryFragment"
-        android:label="DiaryFragment" />
+        android:label="DiaryFragment" >
+        <action
+            android:id="@+id/action_diaryFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="ru.spbstu.diary.post.presentation.PostFragment"
+        android:label="PostFragment" />
 
 </navigation>

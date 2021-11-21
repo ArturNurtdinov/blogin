@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.spbstu.common.di.FeatureUtils
+import ru.spbstu.common.extensions.setDebounceClickListener
 import ru.spbstu.diary.DiaryAdapter
 import ru.spbstu.diary.databinding.FragmentUserBlogBinding
 import ru.spbstu.diary.databinding.LayoutUserNotesBinding
@@ -51,6 +52,9 @@ class UserBlogFragment : Fragment() {
                 }
             }
         })
+        binding.frgUserBlogFab.setDebounceClickListener {
+            viewModel.openPostFragment(false)
+        }
         return binding.root
     }
 

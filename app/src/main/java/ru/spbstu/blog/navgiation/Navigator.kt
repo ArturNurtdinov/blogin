@@ -1,12 +1,16 @@
 package ru.spbstu.blog.navgiation
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import ru.spbstu.auth.AuthRouter
 import ru.spbstu.blog.R
 import ru.spbstu.blog.root.presentation.RootRouter
+import ru.spbstu.common.domain.Blog
 import ru.spbstu.diary.DiaryRouter
+import ru.spbstu.diary.post.presentation.PostFragment
+import ru.spbstu.diary.post.presentation.PostFragment.Companion.MODE_KEY
 import ru.spbstu.profile.ProfileRouter
 import ru.spbstu.search.SearchRouter
 import ru.spbstu.wall.WallRouter
@@ -47,5 +51,12 @@ class Navigator : RootRouter, AuthRouter, WallRouter, SearchRouter, ProfileRoute
 
     override fun openUserProfile() {
         bottomNavController?.navigate(R.id.action_blogFragment_to_userProfileFragment)
+    }
+
+    override fun navigateToPostFragment(isBlog: Boolean, isEdit: Boolean, blog: Blog?) {
+        bottomNavController?.navigate(
+            R.id.action_diaryFragment_to_postFragment,
+            bundleOf(MODE_KEY to PostFragment.Mode(isBlog, isEdit, blog))
+        )
     }
 }
