@@ -1,13 +1,15 @@
 package ru.spbstu.diary.post.presentation
 
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +27,7 @@ import ru.spbstu.diary.di.DiaryApi
 import ru.spbstu.diary.di.DiaryComponent
 import javax.inject.Inject
 
-class PostFragment : Fragment() {
+class PostFragment : Fragment(), ActionMode.Callback {
 
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
@@ -48,9 +50,10 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         inject()
-        removePhotoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_24)!!.apply {
-            setTint(ContextCompat.getColor(requireContext(), R.color.gray))
-        }
+        removePhotoDrawable =
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_24)!!.apply {
+                setTint(ContextCompat.getColor(requireContext(), R.color.gray))
+            }
         _binding = FragmentPostBinding.inflate(inflater, container, false)
         mode = requireArguments().getParcelable(MODE_KEY)!!
         binding.frgPostToolbar.setNavigationOnClickListener {
@@ -76,6 +79,7 @@ class PostFragment : Fragment() {
             viewModel.photoUri = null
         }
         binding.frgPostIbRemovePhoto.setImageDrawable(removePhotoDrawable)
+        binding.frgPostEtPost.customSelectionActionModeCallback = this
         return binding.root
     }
 
@@ -118,4 +122,44 @@ class PostFragment : Fragment() {
 
     @Parcelize
     data class Mode(val isBlog: Boolean, val isEdit: Boolean, val post: Blog? = null) : Parcelable
+
+    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+        requireActivity().menuInflater.inflate(R.menu.text_selection_menu, menu)
+        return true
+    }
+
+    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+        return false
+    }
+
+    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+        val start = binding.frgPostEtPost.selectionStart
+        val end = binding.frgPostEtPost.selectionEnd
+        val text = binding.frgPostEtPost.text ?: return false
+        val spannableBuilder = SpannableStringBuilder(text)
+        return when (item?.itemId) {
+            R.id.bold -> {
+                val span = StyleSpan(Typeface.BOLD)
+                spannableBuilder.setSpan(span, start, end, 1)
+                binding.frgPostEtPost.text = spannableBuilder
+                true
+            }
+            R.id.italic -> {
+                val span = StyleSpan(Typeface.ITALIC)
+                spannableBuilder.setSpan(span, start, end, 1)
+                binding.frgPostEtPost.text = spannableBuilder
+                true
+            }
+            R.id.underline -> {
+                val span = UnderlineSpan()
+                spannableBuilder.setSpan(span, start, end, 1)
+                binding.frgPostEtPost.text = spannableBuilder
+                true
+            }
+            else -> false
+        }
+    }
+
+    override fun onDestroyActionMode(mode: ActionMode?) {
+    }
 }
