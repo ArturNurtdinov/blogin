@@ -5,8 +5,6 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.flow.collect
@@ -39,19 +37,6 @@ class UserProfileFragment : Fragment() {
         _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
         binding.frgUserProfileToolbarTitle.text = "Профиль"
         binding.frgUserProfileRvPosts.adapter = adapter
-        binding.frgUserProfileRvPosts.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                LinearLayoutManager.VERTICAL
-            ).apply {
-                setDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.item_decoration_drawable
-                    )!!
-                )
-            }
-        )
         binding.frgUserProfileAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val expandedPart = abs((appBarLayout.totalScrollRange - abs(verticalOffset.toDouble())) / appBarLayout.totalScrollRange)
             if (expandedPart > 0.2) {

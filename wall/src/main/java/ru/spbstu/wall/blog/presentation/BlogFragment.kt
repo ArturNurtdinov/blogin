@@ -38,16 +38,6 @@ class BlogFragment : Fragment() {
         inject()
         _binding = FragmentBlogBinding.inflate(inflater, container, false)
         binding.frgBlogRvPosts.adapter = adapter
-        binding.frgBlogRvPosts.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                LinearLayoutManager.VERTICAL
-            ).apply {
-                setDrawable(
-                    ContextCompat.getDrawable(requireContext(), R.drawable.item_decoration_drawable)!!
-                )
-            }
-        )
         binding.frgBlogToolbarTitle.text = "Главная"
         return binding.root
     }
