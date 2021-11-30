@@ -34,6 +34,9 @@ class AuthViewModel(
     private val _resetTimer = MutableStateFlow(TIMER_START)
     val resetTimer = _resetTimer.asStateFlow()
 
+    private val _confTimer = MutableStateFlow(TIMER_START)
+    val confTimer = _confTimer.asStateFlow()
+
     private val disposable = CompositeDisposable()
 
     private var login: String? = null
@@ -210,14 +213,61 @@ class AuthViewModel(
                     }
                 }
             }, {
-                Timber.d(TAG, "checkResetCode: $it")
+                Timber.d(TAG, "setNewPassword: $it")
             })
             .addTo(disposable)
     }
 
-    fun sendCodeAgain() {
+    fun signIn(name: String, login: String, email: String, password: String) {
+        this.login = login
+        this.email = email
+        this.password = password
+        _buttonState.value = false
+        authRepository.signIn(name, login, email, password)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                when (it) {
+                    is BlogInResult.Success -> {
+                        _authState.value = AuthState.CONFIRMATION
+                        sendConfCode()
+                        _buttonState.value = true
+                    }
+                    is BlogInResult.Error -> {
+                        _error.value =
+                            "Пользователь с такой почтой уже существует"
+                        _buttonState.value = true
+                    }
+                }
+            }, {
+                Timber.d(TAG, "signIn: $it")
+            })
+            .addTo(disposable)
+    }
+
+    fun sendResetCodeAgain() {
         val email = this.email ?: return
         requestReset(email)
+    }
+
+    fun sendConfCode() {
+        val login = this.login ?: return
+        startConfTimer()
+        authRepository.requestConfirm(login)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                when (it) {
+                    is BlogInResult.Success -> Unit
+                    is BlogInResult.Error -> {
+                        _error.value =
+                            "Ошибка при повторном запросе кода"
+                    }
+                }
+            }, {
+                Timber.d(TAG, "sendConfCodeAgain: $it")
+            })
+            .addTo(disposable)
     }
 
     private fun startResetTimer() {
@@ -228,7 +278,16 @@ class AuthViewModel(
                 delay(1000)
             }
         }
+    }
 
+    private fun startConfTimer() {
+        _confTimer.value = TIMER_START
+        viewModelScope.launch(Dispatchers.IO) {
+            repeat(TIMER_START) {
+                _confTimer.value = _confTimer.value - 1
+                delay(1000)
+            }
+        }
     }
 
     fun onSignInClick() {

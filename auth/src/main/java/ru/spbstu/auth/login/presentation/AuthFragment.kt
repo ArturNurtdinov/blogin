@@ -85,7 +85,41 @@ class AuthFragment : Fragment() {
                     }
                 }
                 AuthViewModel.AuthState.SIGNIN -> {
-//                    _authState.value = AuthViewModel.AuthState.CONFIRMATION
+                    val name = signinBinding.layoutSigninEtName.text?.toString()?.trim()
+                    val login = signinBinding.layoutSigninEtLogin.text?.toString()?.trim()
+                    val email = signinBinding.layoutSigninEtEmail.text?.toString()?.trim()
+                    val pass = signinBinding.layoutSigninEtPassword.text?.toString()?.trim()
+                    val confPass = signinBinding.layoutSigninEtPasswordConf.text?.toString()?.trim()
+                    if (name == null || name.isEmpty()) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Имя не может быть пустым",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setDebounceClickListener
+                    }
+                    if (login == null || login.isEmpty()) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Логин не может быть пустым",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setDebounceClickListener
+                    }
+                    if (email == null || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        Toast.makeText(requireContext(), "Неверно введён email", Toast.LENGTH_SHORT)
+                            .show()
+                        return@setDebounceClickListener
+                    }
+                    if (pass == null || pass.length < AuthViewModel.PASSWORD_MIN_LENGTH || pass != confPass) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Пароли не совпадают или длина пароля меньше ${AuthViewModel.PASSWORD_MIN_LENGTH}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setDebounceClickListener
+                    }
+                    viewModel.signIn(name, login, email, pass)
                 }
                 AuthViewModel.AuthState.CONFIRMATION -> {
                     val code = confBinding.layoutConfEtCode.text?.toString()
@@ -107,14 +141,17 @@ class AuthFragment : Fragment() {
                     }
                 }
                 AuthViewModel.AuthState.RESET_PASSWORD_CODE -> {
-                    val code = resetPasswordBinding.layoutResetPasswordEmailEtCode.text?.toString()?.trim()
+                    val code =
+                        resetPasswordBinding.layoutResetPasswordEmailEtCode.text?.toString()?.trim()
                     if (code?.isNotEmpty() == true && code.length == AuthViewModel.CODE_LENGTH) {
                         viewModel.checkResetCode(code)
                     }
                 }
                 AuthViewModel.AuthState.RESET_PASSWORD_NEW_PASSWORD -> {
-                    val newPass = newPasswordBinding.layoutNewPasswordEmailEtPassword.text?.toString()?.trim()
-                    val confPass = newPasswordBinding.layoutNewPasswordEmailEtConf.text?.toString()?.trim()
+                    val newPass =
+                        newPasswordBinding.layoutNewPasswordEmailEtPassword.text?.toString()?.trim()
+                    val confPass =
+                        newPasswordBinding.layoutNewPasswordEmailEtConf.text?.toString()?.trim()
                     if (newPass != null && confPass != null && newPass.length >= AuthViewModel.PASSWORD_MIN_LENGTH && newPass == confPass) {
                         viewModel.setNewPassword(newPass)
                     }
@@ -174,7 +211,30 @@ class AuthFragment : Fragment() {
                     resetPasswordBinding.layoutResetPasswordEmailTvNewCode.text =
                         getString(R.string.send_code_again_no_args)
                     resetPasswordBinding.layoutResetPasswordEmailTvNewCode.setDebounceClickListener {
-                        viewModel.sendCodeAgain()
+                        viewModel.sendResetCodeAgain()
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.confTimer.collect {
+                if (it > 0) {
+                    confBinding.layoutConfTvNewCode.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.text_secondary)
+                    )
+                    confBinding.layoutConfTvNewCode.isEnabled = false
+                    confBinding.layoutConfTvNewCode.text =
+                        getString(R.string.send_code_again, it)
+                } else {
+                    confBinding.layoutConfTvNewCode.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.primary_light_color)
+                    )
+                    confBinding.layoutConfTvNewCode.isEnabled = true
+                    confBinding.layoutConfTvNewCode.text =
+                        getString(R.string.send_code_again_no_args)
+                    confBinding.layoutConfTvNewCode.setDebounceClickListener {
+                        viewModel.sendConfCode()
                     }
                 }
             }

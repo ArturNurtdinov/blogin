@@ -122,4 +122,23 @@ class AuthRepository(private val api: Api, private val tokensRepository: TokensR
             }
     }
 
+    fun signIn(
+        name: String,
+        login: String,
+        email: String,
+        password: String
+    ): Single<BlogInResult<Any>> {
+        return api.signIn(SignInBody(name, login, email, password))
+            .map {
+                when {
+                    it.isSuccessful -> {
+                        BlogInResult.Success(EMPTY_RESULT)
+                    }
+                    else -> {
+                        BlogInResult.Error(UNKNOWN_ERROR)
+                    }
+                }
+            }
+    }
+
 }
