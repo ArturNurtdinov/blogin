@@ -6,14 +6,17 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.spbstu.auth.R
 import ru.spbstu.auth.databinding.*
@@ -67,7 +70,56 @@ class AuthFragment : Fragment() {
             }
         }
         binding.frgLoginMbActionButton.setDebounceClickListener {
-            viewModel.onMainActionButtonClick()
+            when (viewModel.authState.value) {
+                AuthViewModel.AuthState.LOGIN -> {
+                    val login = loginBinding.layoutLoginEtLogin.text?.toString()?.trim()
+                    val password = loginBinding.layoutLoginEtPassword.text?.toString()?.trim()
+                    if (login?.isNotEmpty() == true && password?.isNotEmpty() == true) {
+                        viewModel.login(login, password)
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Неверно заполнены поля",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                AuthViewModel.AuthState.SIGNIN -> {
+//                    _authState.value = AuthViewModel.AuthState.CONFIRMATION
+                }
+                AuthViewModel.AuthState.CONFIRMATION -> {
+                    val code = confBinding.layoutConfEtCode.text?.toString()
+                    if (code?.isNotEmpty() == true && code.length == AuthViewModel.CODE_LENGTH) {
+                        viewModel.confirm(code)
+                    }
+                }
+                AuthViewModel.AuthState.RESET_PASSWORD_EMAIL -> {
+                    val email =
+                        resetPasswordBinding.layoutResetPasswordEmailEtEmail.text?.toString()
+                            ?.trim()
+                    if (email?.isNotEmpty() == true && Patterns.EMAIL_ADDRESS.matcher(email)
+                            .matches()
+                    ) {
+                        viewModel.requestReset(email)
+                    } else {
+                        Toast.makeText(requireContext(), "Неверно введён адрес", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                AuthViewModel.AuthState.RESET_PASSWORD_CODE -> {
+                    val code = resetPasswordBinding.layoutResetPasswordEmailEtCode.text?.toString()?.trim()
+                    if (code?.isNotEmpty() == true && code.length == AuthViewModel.CODE_LENGTH) {
+                        viewModel.checkResetCode(code)
+                    }
+                }
+                AuthViewModel.AuthState.RESET_PASSWORD_NEW_PASSWORD -> {
+                    val newPass = newPasswordBinding.layoutNewPasswordEmailEtPassword.text?.toString()?.trim()
+                    val confPass = newPasswordBinding.layoutNewPasswordEmailEtConf.text?.toString()?.trim()
+                    if (newPass != null && confPass != null && newPass.length >= AuthViewModel.PASSWORD_MIN_LENGTH && newPass == confPass) {
+                        viewModel.setNewPassword(newPass)
+                    }
+                }
+            }
         }
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -90,6 +142,41 @@ class AuthFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.authState.collect {
                 handleAuthState(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.error.filterNotNull().collect {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.buttonState.collect {
+                binding.frgLoginMbActionButton.isEnabled = it
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.resetTimer.collect {
+                if (it > 0) {
+                    resetPasswordBinding.layoutResetPasswordEmailTvNewCode.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.text_secondary)
+                    )
+                    resetPasswordBinding.layoutResetPasswordEmailTvNewCode.isEnabled = false
+                    resetPasswordBinding.layoutResetPasswordEmailTvNewCode.text =
+                        getString(R.string.send_code_again, it)
+                } else {
+                    resetPasswordBinding.layoutResetPasswordEmailTvNewCode.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.primary_light_color)
+                    )
+                    resetPasswordBinding.layoutResetPasswordEmailTvNewCode.isEnabled = true
+                    resetPasswordBinding.layoutResetPasswordEmailTvNewCode.text =
+                        getString(R.string.send_code_again_no_args)
+                    resetPasswordBinding.layoutResetPasswordEmailTvNewCode.setDebounceClickListener {
+                        viewModel.sendCodeAgain()
+                    }
+                }
             }
         }
     }
@@ -128,7 +215,8 @@ class AuthFragment : Fragment() {
                 binding.frgLoginToolbar.navigationIcon = navigationIconDrawable
                 binding.frgLoginMbActionButton.text = getString(R.string.confirmation_button_text)
                 binding.frgLoginTvNoAccount.visibility = View.GONE
-                confBinding.layoutConfTvNewCode.text = getString(R.string.send_code_again, 50)
+                confBinding.layoutConfTvNewCode.text =
+                    getString(R.string.send_code_again, AuthViewModel.TIMER_START)
             }
             AuthViewModel.AuthState.RESET_PASSWORD_EMAIL -> {
                 loginBinding.layoutLoginRlRoot.visibility = View.GONE
@@ -155,7 +243,8 @@ class AuthFragment : Fragment() {
                 binding.frgLoginToolbar.navigationIcon = navigationIconDrawable
                 binding.frgLoginToolbarTitle.text = getString(R.string.password_recovery)
                 binding.frgLoginTvNoAccount.visibility = View.GONE
-                resetPasswordBinding.layoutResetPasswordEmailTvNewCode.text = getString(R.string.send_code_again, 50)
+                resetPasswordBinding.layoutResetPasswordEmailTvNewCode.text =
+                    getString(R.string.send_code_again, AuthViewModel.TIMER_START)
             }
             AuthViewModel.AuthState.RESET_PASSWORD_NEW_PASSWORD -> {
                 loginBinding.layoutLoginRlRoot.visibility = View.GONE
