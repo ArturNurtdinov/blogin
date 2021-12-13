@@ -99,7 +99,10 @@ class UserBlogFragment : Fragment() {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         viewModel.loadData()
     }
 

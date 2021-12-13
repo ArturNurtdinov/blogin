@@ -81,7 +81,9 @@ class PostViewModel(
 
     fun addSpan(type: SpanType, start: Int, end: Int) {
         spansInternal.add(Span(type, start, end))
-        _spans.value = spansInternal
+        _spans.value = mutableListOf<Span>().apply {
+            addAll(spansInternal)
+        }
     }
 
     fun onFinishClick(text: String) {
@@ -171,7 +173,9 @@ class PostViewModel(
 
     fun addSpans(spans: List<Span>) {
         spansInternal.addAll(spans)
-        _spans.value = spansInternal
+        _spans.value = mutableListOf<Span>().apply {
+            addAll(spansInternal)
+        }
     }
 
     fun back() {

@@ -99,9 +99,13 @@ class UserDiaryFragment : Fragment() {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         viewModel.loadData()
     }
+
 
     private fun inject() {
         FeatureUtils.getFeature<DiaryComponent>(this, DiaryApi::class.java)

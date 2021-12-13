@@ -12,7 +12,7 @@ fun getSpannableText(spans: List<Span>?, text: String): Spannable {
     if (spans == null || spans.isEmpty()) return SpannableString(text)
     val spannable = SpannableString(text)
     spans.forEach {
-        if (it.end > text.length) return spannable
+        if (it.end > text.length + 1) return spannable
         when (it.type) {
             SpanType.BOLD -> {
                 spannable.setSpan(StyleSpan(Typeface.BOLD), it.start, it.end, 1)
