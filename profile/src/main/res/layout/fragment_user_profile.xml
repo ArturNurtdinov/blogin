@@ -113,4 +113,6 @@
         tools:itemCount="3"
         tools:listitem="@layout/item_profile_post" />
 
+    <include layout="@layout/empty_posts" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
