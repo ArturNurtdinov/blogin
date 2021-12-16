@@ -82,12 +82,13 @@ class PostFragment : Fragment(), ActionMode.Callback {
         }
         binding.frgPostIbRemovePhoto.setDebounceClickListener {
             viewModel.photoUri = null
+            viewModel.userDeletedPhoto = true
         }
         binding.frgPostIbRemovePhoto.setImageDrawable(removePhotoDrawable)
         binding.frgPostEtPost.customSelectionActionModeCallback = this
         binding.frgPostFinishPost.setDebounceClickListener {
-            val postText = binding.frgPostEtPost.text?.toString()
-            if (postText == null || postText.isEmpty()) {
+            val postText = binding.frgPostEtPost.text?.toString() ?: ""
+            if (postText.isEmpty() && viewModel.photoUri == null) {
                 Toast.makeText(requireContext(), "Текст не может быть пустым", Toast.LENGTH_SHORT).show()
                 return@setDebounceClickListener
             }
@@ -110,10 +111,7 @@ class PostFragment : Fragment(), ActionMode.Callback {
             )
             val pictureId = blog.pictureId
             if (pictureId != null) {
-                Glide.with(binding.root)
-                    .load(pictureUrlHelper.getPictureUrl(pictureId))
-                    .centerCrop()
-                    .into(binding.frgPostIvImage)
+                viewModel.savePhoto(pictureUrlHelper.getPictureUrl(pictureId).toStringUrl(), requireContext())
 
                 binding.frgPostIbRemovePhoto.visibility = View.VISIBLE
                 binding.frgPostMbAddPhoto.visibility = View.GONE

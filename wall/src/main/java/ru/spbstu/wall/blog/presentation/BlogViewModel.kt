@@ -34,7 +34,7 @@ class BlogViewModel(
         wallRouter.openUserProfile(blog.user.id)
     }
 
-    private fun loadData() {
+    fun loadData() {
         wallRepository.getNews()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

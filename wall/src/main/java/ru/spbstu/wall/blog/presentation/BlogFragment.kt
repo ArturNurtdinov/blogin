@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.spbstu.common.di.FeatureUtils
+import ru.spbstu.common.extensions.setDebounceClickListener
 import ru.spbstu.common.utils.PictureUrlHelper
 import ru.spbstu.wall.databinding.FragmentBlogBinding
 import ru.spbstu.wall.di.WallApi
@@ -41,6 +42,9 @@ class BlogFragment : Fragment() {
         _binding = FragmentBlogBinding.inflate(inflater, container, false)
         binding.frgBlogRvPosts.adapter = adapter
         binding.frgBlogToolbarTitle.text = "Главная"
+        binding.frgBlogRefresh.setDebounceClickListener {
+            viewModel.loadData()
+        }
         return binding.root
     }
 

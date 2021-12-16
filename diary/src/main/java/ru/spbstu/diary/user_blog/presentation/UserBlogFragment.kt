@@ -70,7 +70,7 @@ class UserBlogFragment : Fragment() {
             RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if ((postsBinding.layoutNotesRvPosts.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0) {
+                if ((postsBinding.layoutNotesRvPosts.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0 || adapter.itemCount == 0) {
                     binding.frgUserBlogFab.visibility = View.VISIBLE
                 } else {
                     binding.frgUserBlogFab.visibility = View.GONE

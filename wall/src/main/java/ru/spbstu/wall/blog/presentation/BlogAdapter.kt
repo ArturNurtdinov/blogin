@@ -35,9 +35,9 @@ class BlogAdapter(
 
     fun bingData(newBlogs: List<Blog>) {
         val callback = BlogDiffUtilCallback(blogs, newBlogs)
+        val diffResult = DiffUtil.calculateDiff(callback)
         blogs.clear()
         blogs.addAll(newBlogs)
-        val diffResult = DiffUtil.calculateDiff(callback)
         diffResult.dispatchUpdatesTo(this)
     }
 

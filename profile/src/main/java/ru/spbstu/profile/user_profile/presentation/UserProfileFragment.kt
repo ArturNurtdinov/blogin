@@ -1,12 +1,14 @@
 package ru.spbstu.profile.user_profile.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.flow.collect
@@ -50,28 +52,18 @@ class UserProfileFragment : Fragment() {
         viewModel.userId = requireArguments().getLong(ID_KEY)
         binding.frgUserProfileToolbarTitle.text = "Профиль"
         binding.frgUserProfileRvPosts.adapter = adapter
-        binding.frgUserProfileAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val expandedPart =
-                abs((appBarLayout.totalScrollRange - abs(verticalOffset.toDouble())) / appBarLayout.totalScrollRange)
-            if (expandedPart > 0.2) {
-                binding.frgUserProfileIvAvatar.visibility = View.VISIBLE
-                binding.frgUserProfileIvAvatarStub.visibility = View.VISIBLE
-                binding.frgUserProfileToolbarTitleExpanded.visibility = View.VISIBLE
-                binding.frgUserProfileToolbarTitle.visibility = View.GONE
-            } else {
-                binding.frgUserProfileIvAvatar.visibility = View.GONE
-                binding.frgUserProfileIvAvatarStub.visibility = View.GONE
-                binding.frgUserProfileToolbarTitleExpanded.visibility = View.GONE
-                binding.frgUserProfileToolbarTitle.visibility = View.VISIBLE
+        binding.frgUserProfileRvPosts.layoutManager =
+            object : LinearLayoutManager(requireContext()) {
+                override fun canScrollVertically(): Boolean {
+                    return true
+                }
             }
-        })
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        emptyBinding.root.visibility = View.VISIBLE
+//        emptyBinding.root.visibility = View.VISIBLE
         lifecycleScope.launch {
             viewModel.state.filterNotNull().collect {
                 binding.frgUserProfileToolbarTitle.text = it.profile.name
@@ -103,11 +95,6 @@ class UserProfileFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.posts.filterNotNull().collect {
                 adapter.bingData(it)
-                if (it.isEmpty()) {
-                    emptyBinding.root.visibility = View.VISIBLE
-                } else {
-                    emptyBinding.root.visibility = View.GONE
-                }
             }
         }
 

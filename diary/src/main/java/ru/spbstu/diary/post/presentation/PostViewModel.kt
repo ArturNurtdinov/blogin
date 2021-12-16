@@ -1,15 +1,21 @@
 package ru.spbstu.diary.post.presentation
 
 import android.content.ContentResolver
+import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import ru.spbstu.common.api.model.SpanType
 import ru.spbstu.common.domain.BlogInResult
 import ru.spbstu.common.domain.Span
@@ -19,6 +25,10 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import android.widget.Toast
+import java.io.OutputStream
+import java.lang.Exception
+
 
 class PostViewModel(
     private val router: DiaryRouter,
@@ -40,6 +50,8 @@ class PostViewModel(
     val buttonsState = _buttonsState.asStateFlow()
 
     private val disposable = CompositeDisposable()
+
+    var userDeletedPhoto = false
 
     var mode: PostFragment.Mode? = null
         set(value) {
@@ -117,8 +129,32 @@ class PostViewModel(
                 })
                 .addTo(disposable)
         } else {
-            val pictureId = mode.post?.pictureId
+            val pictureId = if (userDeletedPhoto) null else mode.post?.pictureId
             sendPost(mode.isEdit, text, spansInternal, !mode.isBlog, Date().time, pictureId)
+        }
+    }
+
+    fun savePhoto(url: String, context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            saveImage(
+                Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .submit()
+                    .get(), context.cacheDir, "${Date().time}.jpg"
+            )
+        }
+    }
+
+    private fun saveImage(image: Bitmap, storageDir: File, imageFileName: String) {
+        val imageFile = File(storageDir, imageFileName)
+        try {
+            val fOut: OutputStream = FileOutputStream(imageFile)
+            image.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+            fOut.close()
+            photoUri = Uri.fromFile(imageFile)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

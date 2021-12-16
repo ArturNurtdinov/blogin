@@ -70,7 +70,7 @@ class UserDiaryFragment : Fragment() {
             RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if ((postsBinding.layoutNotesRvPosts.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0) {
+                if ((postsBinding.layoutNotesRvPosts.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0 || adapter.itemCount == 0) {
                     binding.frgUserDiaryFab.visibility = View.VISIBLE
                 } else {
                     binding.frgUserDiaryFab.visibility = View.GONE
@@ -105,7 +105,6 @@ class UserDiaryFragment : Fragment() {
         super.onResume()
         viewModel.loadData()
     }
-
 
     private fun inject() {
         FeatureUtils.getFeature<DiaryComponent>(this, DiaryApi::class.java)
